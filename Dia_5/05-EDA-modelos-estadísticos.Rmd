@@ -1,0 +1,30 @@
+---
+title: "05-EDA-modelos-estadísticos"
+author: "Renan Escalante-Chong"
+date: "July 30, 2016"
+output: html_document
+---
+
+```{r,include=FALSE}
+library(ggplot2)
+library(gcookbook)
+
+```
+
+## Estadística básica
+
+## Ajustar un modelo estadístico a un set de datos
+
+Ajustamos un modelo lineal para un set de datos
+
+```{r}
+sp <- ggplot(heightweight, aes(x=ageYear, y=heightIn))
+sp + geom_point() + stat_smooth(method=lm)
+```
+
+## Ajustar un modelo smooth
+
+```{r}
+sp + geom_point(colour="grey60") + stat_smooth(method=loess)
+```
+

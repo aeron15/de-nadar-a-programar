@@ -1,0 +1,118 @@
+---
+title: "014-gráficos-de-línea"
+author: "Renan Escalante-Chong"
+date: "July 29, 2016"
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+---
+
+# Definición
+
+Los gráficos de líneas muestran los datos en forma de puntos y todos los puntos de la misma serie se unen mediante una línea
+
+## Qué podemos aprender?
+
+Los gráficos de líneas son perfectos para mostrar tendencias a lo largo de un período de tiempo.
+
+# Tutorial
+
+
+```{r, include=FALSE}
+library(gcookbook)
+library(stringr)
+library(ggplot2)
+#install.packages("gcookbook")
+```
+
+## Gráfico de línea
+
+```{r}
+ggplot(pressure, aes(x=temperature, y=pressure)) + geom_line()
+```
+
+## Agregando puntos al gráfico
+
+```{r}
+ggplot(pressure, aes(x=temperature, y=pressure)) + geom_line()+geom_point()
+```
+
+## Cambiando escalas de datos
+
+```{r}
+ggplot(worldpop, aes(x=Year, y=Population)) + geom_line() + geom_point()
+```
+
+## Agregar escala logarítmica
+
+```{r}
+ggplot(worldpop, aes(x=Year, y=Population)) + geom_line() + geom_point() +scale_y_log10()
+```
+
+Cuál es la diferencia entre la escala logarítmica versus escala lineal?
+
+## Agregar varias líneas a un gráfico
+
+```{r}
+#Importar datos
+efecto_medicina_ALS<-read.table("efectos_medicina_ALS.tsv",header = TRUE)
+
+#Combina todos los puntos
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto))+ geom_line()
+```
+
+### Separar los pacientes por colores
+
+```{r}
+#Separar por paciente
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto, colour=paciente))+ geom_line()
+```
+
+### Separar los pacientes por tipos de línea
+
+```{r}
+#Separar por paciente
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto, linetype=paciente))+ geom_line()
+```
+
+## Agregar colores a los gráficos
+
+```{r, tidy=TRUE}
+#Separar por paciente
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto, fill=paciente))+ 
+  geom_line()+
+  geom_point(size=4, shape=21) 
+```
+
+## Escogiendo mejores colores
+
+```{r, tidy=TRUE}
+#Separar por paciente
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto, color=paciente))+ 
+  geom_line()+
+  scale_color_brewer(palette = "Set1")
+
+```
+
+## Agregar intervalos de confianza
+
+Si queremos agregar valores cerca de la media y los valores que creemos que son importantes.
+
+```{r}
+ggplot(efecto_medicina_ALS, aes(x=dosis,y=efecto, color=paciente))+ 
+  scale_color_brewer(palette = "Set1")+
+  geom_ribbon(aes(ymin=efecto-1,ymax=efecto+1), alpha=0.3, linetype="blank")+
+  geom_line()
+
+```
+
+
+

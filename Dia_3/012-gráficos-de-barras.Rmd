@@ -1,0 +1,82 @@
+---
+title: "012-gráficos-de-barras"
+author: "Renan Escalante-Chong"
+date: "July 29, 2016"
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+---
+
+# Definición
+
+Un diagrama de barras, también conocido como gráfico de barras o diagrama de columnas, es una forma de representar gráficamente un conjunto de datos o valores, y está conformado por barras rectangulares de longitudes proporcionales a los valores representados. 
+
+## Qué podemos aprender?
+
+Los gráficos de barras son usados para comparar dos o más valores. Las barras pueden orientarse verticalmente u horizontalmente.
+
+# Tutorial
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+```
+
+## Gráfica de barras básica
+
+```{r}
+ggplot(BOD, aes(x=Time, y=demand)) + geom_bar(stat="identity")
+```
+
+```{r}
+ggplot(mtcars, aes(x=factor(cyl))) + geom_bar()
+```
+
+## Agregando color a los plots
+
+
+```{r}
+ggplot(BOD, aes(x=Time, y=demand)) +
+    geom_bar(stat="identity", fill="lightblue", colour="black")
+```
+
+## Agrupando barras 
+
+```{r}
+
+ggplot(mtcars, aes(x=mpg, y=hp))+
+  geom_bar(stat="identity")
+```
+
+## Gráfico de barras contando
+
+```{r}
+ggplot(mtcars, aes(x=mpg)) +
+    geom_bar()
+
+```
+
+## Gráfica de barras cambiando los ejes de coordenadas
+
+```{r}
+ggplot(BOD, aes(x=Time, y=demand)) + 
+  geom_bar(stat="identity")+
+  coord_polar(theta = "x", direction = 1)
+```
+
+## Plots con datos en un gráfico pastel
+
+```{r}
+datos_ALS<-read.table("../Dia_1/datos_ALS.tsv", header = TRUE)
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ geom_bar(stat = "identity")
+```
+
+

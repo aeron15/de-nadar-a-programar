@@ -1,0 +1,192 @@
+---
+title: "06-google-spreadsheet"
+author: "Renan Escalante-Chong"
+date: "July 30, 2016"
+output: html_document
+---
+
+```{r}
+
+#install.packages("gsheet")
+library(gsheet)
+library(ggplot2)
+library(tidyr)
+library(plotly)
+```
+
+
+```{r}
+
+#url <- 'https://docs.google.com/spreadsheets/d/1Tyi4fJwSRjMUOznJ5piHJEcvw7QNVZ7cPXvCAfXGf9M/edit?usp=sharing'
+#url <- 'https://docs.google.com/spreadsheets/d/1G2UT7gykGC4trX7zc3AbIiENRjR7aKQdlbD5xZSnJMk/edit?usp=sharing'
+#datos <- gsheet2tbl(url)
+#datos<-as.data.frame(datos)
+datos<-read.csv("datos_STACK.csv")
+```
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Normal,y=Abecedario))+ geom_point()
+```
+
+## Plot interactivo
+
+```{r}
+# Graficar distintos jugadores
+p<-ggplot(datos, aes(x=Normal,y=Abecedario))+ geom_point()
+ggplotly(p)
+
+```
+
+Gráfico interactivo con texto del estudiante
+
+```{r}
+# Graficar distintos jugadores
+p<-ggplot(datos, aes(x=Normal,y=Abecedario))+ geom_point(aes(text=Estudiante))
+ggplotly(p)
+```
+
+Gráfico de barras
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Estudiante, y=Normal)) + 
+geom_bar(stat="identity") +
+theme(axis.text.x = element_text(angle = 90))
+```
+
+Gráfico de barras por género
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Estudiante, y=Normal)) + 
+geom_bar(stat="identity") +
+theme(axis.text.x = element_text(angle = 90))+
+facet_grid(Pizza.Hamburguesa~Género)
+
+```
+
+Gráfico de barras
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Estudiante, y=Normal)) + geom_bar(stat="identity") + facet_grid(.~ Género)+ theme(axis.text.x = element_text(angle = 90))
+
+```
+
+Gráfico de barras
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Estudiante, y=Normal)) + geom_bar(stat="identity") + facet_grid(.~ Género)+ coord_flip()
+
+```
+
+
+Gráfico interactivo con texto del estudiante
+
+```{r}
+# Graficar distintos jugadores
+p<-ggplot(datos, aes(x=Normal,y=Abecedario))+ geom_point(aes(text=Estudiante))
+ggplotly(p)
+```
+
+## Histogramas
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Normal))+ geom_histogram()
+```
+
+## Scatter plot
+
+```{r}
+# Graficar distintos jugadores
+ggplot(datos, aes(x=Normal,y=Abecedario))+ 
+  geom_point() +
+  geom_text(aes(label=Estudiante), size=4,vjust=2)
+```
+
+## Datos iniciales
+```{r}
+ggplot(datos, aes(x=reorder(Estudiante, Normal), y=Normal)) + 
+  geom_point(size=3) + # Use a larger dot theme_bw() +
+  theme_bw() +
+theme(axis.text.x = element_text(angle=60, hjust=1),
+              panel.grid.major.y = element_blank(),
+              panel.grid.minor.y = element_blank(),
+              panel.grid.major.x = element_line(colour="grey60", linetype="dashed"))
+```
+
+```{r}
+
+ggplot(datos, aes(x=Normal, y=Estudiante)) + 
+geom_point(size=3) + # Use a larger dot theme_bw() +
+theme(panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              panel.grid.major.y = element_line(colour="grey60", linetype="dashed"))
+
+```
+
+```{r}
+
+ggplot(datos, aes(x=Normal, y=Estudiante)) + 
+geom_segment(aes(yend=Estudiante), xend=0, colour="grey50")+
+geom_point(size=3, aes(colour=Educación))+
+scale_colour_brewer(palette="Set1", limits=c("Bachillerato","Universidad"), guide=FALSE) + theme_bw() +
+theme(panel.grid.major.y = element_blank()) +
+facet_grid(Educación ~ ., scales="free_y", space="free_y")
+
+```
+
+
+
+```{r}
+ggplot(datos, aes(x=Normal,y=Abecedario))+ geom_point() + facet_grid(.~Ciudad)
+```
+
+```{r}
+ggplot(datos, aes(x=Normal, y=Ciudad))+ geom_boxplot() 
+```
+
+```{r}
+#Datos por ciudad
+ggplot(datos, aes(x=Ciudad, y=Normal))+ geom_boxplot() 
+```
+
+```{r}
+#Datos por tipo de test
+datos_transformado<-gather(datos,tipo_test,puntuacion,Normal,Abecedario,Al.reves)
+```
+
+## Por tipo de prueba
+
+```{r}
+#Datos por tipo de test
+ggplot(datos_transformado, aes(x=tipo_test,y=puntuacion))+ geom_boxplot()
+```
+```{r}
+
+```
+
+## En qué percentil?
+
+El color es el grado de educación
+
+```{r}
+
+ggplot(datos_transformado, aes(x=puntuacion, y=Estudiante)) + 
+geom_segment(aes(yend=Estudiante), xend=0, colour="grey50") +
+geom_point(size=3, aes(colour=Educación)) +
+scale_colour_brewer(palette="Set1", limits=c("Bachillerato","Universidad"), guide=FALSE) + theme_bw() +
+theme(panel.grid.major.y = element_blank()) +
+facet_grid(tipo_test ~ ., scales="free_y", space="free_y")
+
+```
+
+```{r}
+#write.table(datos,file="datos_STACK.csv",quote = FALSE, sep = ",")
+
+```
+
+

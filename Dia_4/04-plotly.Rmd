@@ -1,0 +1,57 @@
+---
+title: "04-plotly"
+author: "Renan Escalante-Chong"
+date: "August 1, 2016"
+output: ioslides_presentation
+---
+
+# Gráficos interactivos
+
+## Load libraries
+
+```{r}
+library(plotly)
+```
+
+## Lear datos
+
+```{r}
+datos_ALS<-read.table(file="../Dia_1/datos_ALS.tsv", header = TRUE)
+```
+
+## Crear un plot interactivo
+
+```{r}
+p<-ggplot(datos_ALS,aes(x=edad,y=progresion))+ geom_point()
+ggplotly(p)
+```
+
+## Cambiar Agregar texto a cada plot
+
+```{r}
+ggplot(datos_ALS,aes(x=edad,y=progresion))+ geom_point(aes(text=pacientes))
+```
+
+## Cambiar Agregar texto a cada plot
+
+```{r}
+p<-ggplot(datos_ALS,aes(x=edad,y=progresion))+ geom_point(aes(text=pacientes))
+ggplotly(p)
+```
+
+## Crear gráfico de barras interactivo
+
+```{r}
+p<-ggplot(datos_ALS,aes(x=pacientes,y=progresion))+ geom_bar(stat = "identity")+ coord_flip()
+p
+#ggplotly(p)
+```
+
+## Crear gráfico de barras interactivo
+
+```{r}
+p<-ggplot(datos_ALS,aes(x=pacientes,y=progresion))+ geom_bar(stat = "identity")+ coord_flip()
+ggplotly(p)
+```
+
+
