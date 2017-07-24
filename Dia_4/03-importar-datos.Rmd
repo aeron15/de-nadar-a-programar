@@ -1,0 +1,42 @@
+---
+title: "03-importar-datos"
+author: "Renan Escalante-Chong"
+date: "August 1, 2016"
+output: ioslides_presentation
+---
+# 03-Importar datos a R
+
+## Cambiar el directorio
+
+Obtener directorio de trabajo **getwd()**
+
+Cambiar directorio **setwd()**
+
+## Importar sencillo
+
+```{r, eval=FALSE}
+datos<-read.table(file="datos_ALS.tsv", header = TRUE)
+datos<-read.table(file="datos_ALS.csv", header = TRUE, sep = ",")
+
+```
+
+
+## Importar desde google
+
+```{r eval=FALSE}
+
+url <- 'https://docs.google.com/spreadsheets/d/1Tyi4fJwSRjMUOznJ5piHJEcvw7QNVZ7cPXvCAfXGf9M/edit?usp=sharing'
+datos <- gsheet2tbl(url)
+datos<-as.data.frame(datos)
+```
+
+
+## Importar datos de xlsx
+
+```{r}
+library(readxl)
+
+file<-"../../ALS_research/data/proteomics/iMNs/20160707_iMN_ProteinLevel_Comparison_ComboLibrary_ToRenan.xlsx"
+data<-readxl::read_excel(file, sheet=1)
+```
+

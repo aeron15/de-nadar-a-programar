@@ -1,0 +1,102 @@
+---
+title: "011-gráficos-de-dispersión"
+author: "Renan Escalante-Chong"
+date: "July 29, 2016"
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+---
+```{r setup, include=FALSE}
+library(ggplot2)
+library(gcookbook)
+```
+
+# Definición
+
+Es un tipo de diagrama matemático que utiliza las coordenadas cartesianas para mostrar los valores de dos variables para un conjunto de datos. Los datos se muestran como un conjunto de puntos, cada uno con el valor de una variable que determina la posición en el eje horizontal (x) y el valor de la otra variable determinado por la posición en el eje vertical
+
+## Qué podemos aprender?
+
+Un diagrama de dispersión puede sugerir varios tipos de correlaciones entre las variables con un intervalo de confianza determinado. La correlación puede ser positiva (aumento), negativa (descenso), o nula (las variables no están correlacionadas)
+
+# Tutorial
+
+## Gráfico simple
+
+```{r}
+ggplot(mtcars, aes(x=wt, y=mpg)) + geom_point()
+```
+
+## Cambiando el tamaño de los gráficos
+
+Prueba usar distintos números de tamaño de punto
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn)) + geom_point(size=1.5)
+```
+
+## Cambia la forma de punto en el gráfico
+
+Para ver los distintos tipos de forma checa el cheatsheet de ggplot2
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn)) + geom_point(shape=10)
+```
+
+## Cambiar el color
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=sex)) + geom_point()
+
+```
+
+
+## Cambiar la forma
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex)) + geom_point()
+```
+
+## Cambiar la forma y el color de puntos
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex, colour=sex)) +
+        geom_point()
+```
+
+## Cambiar la forma y el tamaño de los puntos
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn, shape=sex)) +
+        geom_point(size=3) + scale_shape_manual(values=c(1, 4))
+```
+
+## Gráfico condicional (avanzado)
+
+```{r}
+# Make a copy of the data
+hw <- heightweight
+# Categorize into <100 and >=100 groups (Hacer grupos)
+hw$weightGroup <- cut(hw$weightLb, breaks=c(-Inf, 100, Inf),
+                          labels=c("< 100", ">= 100"))
+# Use shapes with fill and color, and use colors that are empty (NA) and # filled
+ggplot(hw, aes(x=ageYear, y=heightIn, shape=sex, fill=weightGroup)) +
+geom_point(size=2.5) + scale_shape_manual(values=c(21, 24)) + scale_fill_manual(values=c(NA, "black"),
+          guide=guide_legend(override.aes=list(shape=21)))
+
+```
+
+## Mapear un tercer valor a los colors
+
+```{r}
+ggplot(heightweight, aes(x=ageYear, y=heightIn, colour=weightLb)) + geom_point()
+```
+

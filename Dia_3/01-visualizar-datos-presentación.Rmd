@@ -1,0 +1,169 @@
+---
+title: "01-visualizar-datos-presentacion"
+author: "Renan Escalante-Chong"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: ioslides_presentation
+---
+
+```{r setup1, include=FALSE}
+library(knitr)
+library(ggplot2)
+```
+
+# Visualización de datos
+
+## Introducción
+
+Este tutorial te mostrará como visualizar datos usando la librería de R ggplot2.
+Este paquete fue creado for Hadley Wickman.
+La mayoría de los ejemplos de este tutorial están basados en el libro [R for data science](http://r4ds.had.co.nz)
+
+## Data frames
+
+Un data frame es una estructura de datos en R
+Un data frame es una tabla donde las columnas (columns) son variables y las filas (rows) son instancias, casos.
+
+```{r, include=FALSE}
+x<-c("Juan","Mildred","Sofía")
+y<-c(22,18,21)
+fac<-c("UNAM","UV","preparatoria")
+estado<-c("Tabasco","Campeche","Puebla")
+d <- data.frame(estudiantes = x, edad = y, fac = fac,estado=estado)
+```
+
+Nota: Este tipo de datos son datos limpios **tidy data** donde las columnas son siempre variables y las filas son instancias.
+
+```{r, echo=F}
+kable(d)
+```
+
+## Prerequisites
+
+To access the datasets, help pages, and functions that we will use in this chapter, load ggplot2 using the `library()` function. We'll also load tibble, which you'll learn about later. It improves the default printing of datasets.
+
+```{r setup}
+library(ggplot2)
+```
+
+If you run this code and get the error message "there is no package called ‘ggplot2’", you'll need to first install it, then run `library()` once again.
+
+```{r eval = FALSE}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+## A graphing template
+
+Let's use our first graph to answer a question: Do cars with big engines use more fuel than cars with small engines? 
+
+You can test your answer with the `mpg` dataset in ggplot2, or `ggplot2::mpg`:
+  
+```{r, echo=FALSE}
+mpg2<-as.data.frame(mpg[1:5,])
+kable(mpg2)
+```
+
+```{r, include=FALSE}
+#The dataset contains observations collected by the EPA on 38 models of car. Among the variables in `mpg` are:
+#  
+#  1. `displ`, a car's engine size, in litres.
+#
+#1. `hwy`, a car's fuel efficiency on the highway, in miles per gallon (mpg). 
+#A car with a low fuel efficiency consumes more fuel than a car with a high 
+#fuel efficiency when they travel the same distance. 
+#
+#To learn more about `mpg`, open its help page by running `?mpg`.
+#
+#To plot `mpg`, open an R session and run the code below. The code plots the `mpg` data by putting `displ` on the x-axis and `hwy` on the y-axis:
+``` 
+
+## Gráficos 
+
+Muchas veces podemos usar números para tratar de entender un set de datos usando representaciones gráficas
+
+Los autos con motores grandes consumen más gasolina?
+  
+## A graphing template (2)
+
+Esta es una forma de describir un gráfico
+
+```{r, fig.height = 4 , fig.width= 7}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+
+## Gramática de gráficos
+
+Aquí vamos a aprender la gramática de como construir un gráfico
+
+1. Set de datos (data)
+2. Especificar que variables y que instancias del set de datos queremos (mapping)
+3. Luego especificamos que tipo de plot queremos (geom_point)
+4. Por último agregamos propiedades del gráfico 
+
+```{r eval=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+
+## Exercises
+
+1.  Run `ggplot(data = mpg)` what do you see?
+
+1.  What does the `drv` variable describe?  Read the help for `?mpg` to find
+    out.
+     
+1.  Make a scatterplot of `hwy` vs `cyl`.
+
+1.  What happens if you make a scatterplot of `class` vs `drv`. Why is
+    the plot not useful?
+    
+## Agregar "aesthetics" podemos agregar propiedades al gráfico
+
+```{r, fig.height = 3 , fig.width= 7}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, 
+                           color = class))
+```
+
+## Gráfico usando tamaño (mal ejemplo)
+
+```{r, fig.height = 3 , fig.width= 7}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, 
+                           size = class))
+```
+
+## Gráfico usando formas
+```{r, fig.height = 3 , fig.width= 7, eval=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+```
+
+## Gráfico usando formas
+```{r, fig.height = 3 , fig.width= 7, echo=FALSE, warning=FALSE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+```
+
+## Selección condicional (color)
+
+```{r, fig.height = 3 , fig.width= 7}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ<5))
+```
+
+## Obtener ayuda
+
+Escriban ?geom_point
+
+```{r}
+datos<-read.table("efectos_medicina_ALS.tsv", header = FALSE)
+datos_ALS<-read.table("datos_ALS.tsv", header = FALSE)
+```
+
+
+
+

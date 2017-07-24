@@ -1,0 +1,114 @@
+---
+title: "015-histogramas"
+author: "Renan Escalante-Chong"
+date: "July 29, 2016"
+output:
+  html_document:
+    highlight: tango
+    number_sections: yes
+    theme: spacelab
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+---
+
+
+```{r, include=FALSE}
+library(gcookbook)
+library(stringr)
+library(ggplot2)
+#install.packages("gcookbook")
+```
+
+# Definición
+
+Los gráficos de líneas son perfectos para mostrar tendencias a lo largo de un período de tiempo.
+
+## Qué podemos aprender?
+
+Sirven para obtener una "primera vista" general, o panorama, de la distribución de la población, o la muestra, respecto a una característica, cuantitativa y continua, de la misma y que es de interés para el observador (como la longitud o la masa). De esta manera ofrece una visión en grupo permitiendo observar una preferencia, o tendencia, por parte de la muestra o población por ubicarse hacia una determinada región de valores dentro del espectro de valores posibles (sean infinitos o no) que pueda adquirir la característica.
+
+# Tutorial
+
+## Hacer un histograma
+
+```{r}
+ggplot(mtcars, aes(x=cyl)) + geom_histogram(binwidth = 1)
+```
+
+## Hacer un histograma
+
+```{r}
+ggplot(faithful, aes(x=waiting)) + geom_histogram()
+```
+
+## Hacer un histograma sin un data frame
+
+```{r}
+w<-rnorm(100)*10
+ggplot(NULL, aes(x=w)) + geom_histogram()
+```
+
+##Controlar el número de compartimientos
+
+Anchura del compartimiento 5
+
+```{r}
+ggplot(NULL, aes(x=w)) + geom_histogram(binwidth=5, fill="white", colour="black")
+```
+
+##Controlar el número de compartimientos
+
+Anchura del compartimiento 15
+
+```{r}
+ggplot(NULL, aes(x=w)) + geom_histogram(binwidth=15, fill="white", colour="black")
+```
+
+## Hacer histogramas de varios datos
+
+```{r}
+
+ggplot(mtcars, aes(x=disp)) + 
+  geom_histogram(fill="white", colour="black") + 
+  facet_grid(am ~ .)
+
+```
+
+## Hacer histogramas de varios datos
+
+Para ciertas características
+
+```{r}
+
+ggplot(mtcars, aes(x=disp)) + 
+  geom_histogram(fill="white", colour="black") + 
+  facet_grid(. ~ am)
+```
+
+## Hacer una curva de densidad
+
+```{r}
+ggplot(faithful, aes(x=waiting)) + geom_line(stat="density") +
+        expand_limits(y=0)
+
+#ggplot(NULL, aes(x=w)) + geom_line(stat="density")+ expand_limits(y=0)
+
+```
+
+## Hacer una curva de densidad con un histograma
+
+Ayuda a escalar los datos para que el histograma y los datos quepan en el mismo gráfico
+ y=..density...
+ 
+```{r}
+   ggplot(faithful, aes(x=waiting, y=..density..)) +
+        geom_histogram(fill="cornsilk", colour="grey60", size=.2) +
+        geom_density() +
+        xlim(35, 105)
+
+```
+

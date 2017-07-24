@@ -1,0 +1,43 @@
+---
+title: "datos_ALS"
+author: "Renan Escalante-Chong"
+date: "July 31, 2016"
+output: html_document
+---
+
+```{r}
+#Creamos un nuevo set de datos que representa pacientes, progresión de la enfermedad
+
+n_pacientes<-20
+pacientes<-str_c(rep("paciente",n_pacientes),"_",as.character(1:n_pacientes))
+datos_ALS<-data.frame(pacientes=pacientes)
+datos_ALS$tipo_ALS<-rbinom(n_pacientes,1,0.5)
+datos_ALS$tipo_ALS[datos_ALS$tipo_ALS==1]<-"esporadico"
+datos_ALS$tipo_ALS[datos_ALS$tipo_ALS==0]<-"familiar"
+
+#Sexo
+
+datos_ALS$genero<-rbinom(n_pacientes,1,0.6)
+datos_ALS$genero[datos_ALS$genero==1]<-"hombre"
+datos_ALS$genero[datos_ALS$genero==0]<-"mujer"
+
+# Edad
+
+edad<-55+15*rnorm(n_pacientes)
+datos_ALS$edad<-edad
+
+datos_ALS$progresion<-abs(datos_ALS$edad/100*rnorm(n_pacientes))
+
+write.table(datos_ALS,file="datos_ALS.tsv",quote=FALSE,sep="\t",row.names = FALSE, col.names = TRUE)
+```
+
+```{r}
+vector1<-c(rep("paciente1",7), rep("paciente2",7))
+vector2<-rep(seq(0,0.6,by=0.1),2)
+vector3<-c(1:7+rnorm(7),1:7+rnorm(7))
+
+efecto_medicina_ALS<-data.frame(paciente=vector1, dosis=vector2, efecto=vector3)
+
+write.table(efecto_medicina_ALS,file="efectos_medicina_ALS.tsv",quote=FALSE,sep="\t",row.names = FALSE, col.names = TRUE)
+```
+

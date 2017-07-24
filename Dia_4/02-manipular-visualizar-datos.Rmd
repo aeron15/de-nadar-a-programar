@@ -1,0 +1,174 @@
+---
+title: "02-manipular-visualizar-datos"
+author: "Renan Escalante-Chong"
+date: "July 29, 2016"
+output: ioslides_presentation
+---
+
+# Conceptos importantes
+
+## Diferencias entre variables continúas y discretas
+
+- Una variable continúa es númericas (son numeric)
+
+- Una variable discreta describe categorías (son characters, factors)
+
+```{r}
+class(1)
+class("paciente")
+```
+
+
+# Manipulación (manejo) y visualización de datos
+
+```{r setup, include=FALSE}
+library(ggplot2)
+```
+
+## Selección condicional (color)
+
+```{r, fig.height = 3 , fig.width= 7}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ<5))
+```
+
+## Gráfico con ciertos puntos resaltados
+
+```{r, fig.height = 4 , fig.width= 7}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() + 
+  geom_point(data = dplyr::filter(mpg, displ > 5, hwy > 20), 
+             colour = "red", size = 2.2)
+```
+
+## Agregar un título
+
+```{r , fig.height = 3 , fig.width= 5}
+datos_ALS<-read.table("../Dia_1/datos_ALS.tsv", header = TRUE)
+
+ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
+  geom_point() +
+  ggtitle("Relación de la progresion como función de edad")
+```
+
+## Cambiar el texto del título
+
+```{r , fig.height = 3 , fig.width= 5}
+
+ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
+geom_point() +
+ggtitle("Relación de la progresion como función de edad") +
+theme(axis.title.x=element_text(size=16, lineheight=.9, family="Times",
+                                        face="bold.italic", colour="red"))
+```
+
+## Anotar puntos de los gráficos (slide 1)
+
+Agregar texto de pacientes
+
+```{r, eval=FALSE}
+ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
+  geom_point() +
+  geom_text(aes(label=pacientes), size=4,vjust=2)
+```
+
+## Anotar puntos de los gráficos (slide 2)
+
+Agregar texto de pacientes
+
+```{r, fig.height = 4 , fig.width= 7, echo=FALSE}
+ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
+  geom_point() +
+  geom_text(aes(label=pacientes), size=4,vjust=2)
+```
+
+## Agregar texto a un gráfico
+
+Agregar más texto a un gráfico
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
+  geom_point() +
+  annotate("text", x=60, y=0.5, label="Anotacion", family="serif",
+                 fontface="italic", colour="darkred", size=3) 
+
+```
+
+## Intercambiar los ejes a los gráficos (slides 1)
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity") 
+```
+
+
+## Intercambiar los ejes a los gráficos (slides 2)
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
+
+
+## Agregar nombres a los ejes
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity") +
+  coord_flip()+
+  scale_x_discrete(labels = datos_ALS$tipo_ALS)
+```
+
+## Agregar temas a las figuras
+
+Prueba los siguientes temas theme_bw, theme_grey,theme_classic, theme_minimal
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity")+
+  coord_flip()+
+  theme_bw()
+```
+
+## Rotar ejes
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+## Rotar ejes y anotar
+
+Ajustar los ejes de  los datos
+
+```{r, fig.height = 3 , fig.width= 5}
+ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## Facets
+
+```{r, fig.height = 4 , fig.width= 7}
+ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
+  geom_point() + 
+  facet_grid(. ~ genero)
+```
+
+## Facets 2
+
+```{r, fig.height = 4 , fig.width= 7}
+ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
+  geom_point() + 
+  facet_grid(. ~ tipo_ALS)
+```
+
+## Facets 3
+
+```{r, fig.height = 4 , fig.width= 7}
+ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
+  geom_point() + 
+  facet_grid(genero ~ tipo_ALS)
+```
