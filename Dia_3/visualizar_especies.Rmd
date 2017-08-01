@@ -1,0 +1,55 @@
+---
+title: "visualizar especies"
+author: "Renan Escalante-Chong"
+date: "7/31/2017"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(readxl)
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(stringr)
+```
+
+```{r}
+datos_pacifico <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/pacifico.xlsx' %>% read_excel(sheet = 4, skip = 1) %>% clean_names() %>% rename(codigo = código)
+
+datos_golfo <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/golfo_california.xlsx' %>% read_excel(sheet = 3, skip = 1) %>% clean_names()
+
+sitios_pacifico <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/pacifico.xlsx' %>% read_excel(sheet = 1) %>% clean_names()
+
+```
+
+```{r, include=FALSE}
+tmp1 <- datos_golfo %>% gather(rango, total_rango, 15:32) %>% filter(!is.na(total_rango)) %>% rename(localidad = sitio_oficial, total = abundancia) %>% dplyr::select(localidad, especie, total, biomasa, densidad, rango, total_rango) %>% mutate(region = 'golfo')
+
+tmp2 <- datos_pacifico %>% gather(rango, total_rango, 12:30) %>% filter(!is.na(total_rango)) %>% dplyr::select(localidad, especie, total, biomasa, densidad, rango, total_rango) %>% mutate(region = 'pacifico')
+
+datos_df <- rbind(tmp1, tmp2)
+
+datos_df %<>% mutate(rango = str_replace(rango, 'x', ''))
+```
+
+Abundancia por especie
+
+```{r, echo=FALSE}
+# Abundancia por especie
+
+datos_df %>% ggplot(aes(x=localidad, y = densidad )) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + facet_wrap(~ especie)
+```
+
+
+
+```{r, echo=FALSE}
+datos_df %>% ggplot(aes(x = biomasa )) + geom_histogram() + facet_grid(especie ~ localidad)
+```
+
+```{r, echo=FALSE}
+datos_df %>% mutate(biomasa = log10(biomasa)) %>% ggplot(aes(x = localidad, y = biomasa )) + geom_boxplot() + facet_wrap(~especie) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+```
+
+
