@@ -57,6 +57,13 @@ datos_df %<>% filter(!is.na(localidad))
 # datos_df %<>% mutate(año = year(as.POSIXlt(fecha, format="%d/%m/%Y")))
 # datos_df %<>% mutate(mes = month(dmy(fecha)))
 
+# datos_df %>% mutate(region = ifelse(localidad = 'loreto', , ,))
+# datos_df %>% mutate(region = if_else(localidad == 'loreto'){'golfo'})
+datos_df$region[datos_df$localidad == 'loreto'] <- 'golfo'
+datos_df$region[datos_df$localidad == 'espiritu_santo'] <- 'golfo'
+datos_df$region[datos_df$localidad == 'cabo_pulmo'] <- 'golfo'
+datos_df$region[datos_df$localidad == 'los_cabos'] <- 'golfo'
+
 datos_df %>% write_tsv('../datos/datos_arrecifes_especies.tsv')
 ```
 
