@@ -15,23 +15,23 @@ library(tidyr)
 library(stringr)
 ```
 
-```{r}
-datos_pacifico <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/pacifico.xlsx' %>% read_excel(sheet = 4, skip = 1) %>% clean_names() %>% rename(codigo = código)
+```{r, include=FALSE}
+datos_pacifico <- '../datos/pacifico.xlsx' %>% read_excel(sheet = 4, skip = 1) %>% clean_names() %>% rename(codigo = código)
 
-datos_golfo <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/golfo_california.xlsx' %>% read_excel(sheet = 3, skip = 1) %>% clean_names()
+datos_golfo <- '../datos/golfo_california.xlsx' %>% read_excel(sheet = 3, skip = 1) %>% clean_names()
 
-sitios_pacifico <- '/Users/Renan/Documents/repositories/de_nadar_a_programar/datos/pacifico.xlsx' %>% read_excel(sheet = 1) %>% clean_names()
+sitios_pacifico <- '../datos/pacifico.xlsx' %>% read_excel(sheet = 1) %>% clean_names()
 
 ```
 
 ```{r, include=FALSE}
-tmp1 <- datos_golfo %>% gather(rango, total_rango, 15:32) %>% filter(!is.na(total_rango)) %>% rename(localidad = sitio_oficial, total = abundancia) %>% dplyr::select(localidad, especie, total, biomasa, densidad, rango, total_rango) %>% mutate(region = 'golfo')
+tmp1 <- datos_golfo %I>% gather(rango, total_rango, 15:32) %>% filter(!is.na(total_rango)) %>% rename(localidad = sitio_oficial, total = abundancia) %>% dplyr::select(localidad, especie, total, biomasa, densidad, rango, total_rango) %>% mutate(region = 'golfo')
 
 tmp2 <- datos_pacifico %>% gather(rango, total_rango, 12:30) %>% filter(!is.na(total_rango)) %>% dplyr::select(localidad, especie, total, biomasa, densidad, rango, total_rango) %>% mutate(region = 'pacifico')
 
 datos_df <- rbind(tmp1, tmp2)
 
-datos_df %<>% mutate(rango = str_replace(rango, 'x', ''))
+datos_df %<>% mutate(especie = str_replace(especie, ' ' , '_'))
 ```
 
 Abundancia por especie
