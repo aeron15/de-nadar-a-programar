@@ -1,7 +1,7 @@
 ---
 title: "02-manipular-visualizar-datos"
 author: "Renan Escalante-Chong"
-date: "July 29, 2016"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: ioslides_presentation
 ---
 
@@ -44,7 +44,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
 ## Agregar un título
 
 ```{r , fig.height = 3 , fig.width= 5}
-datos_ALS<-read.table("../Dia_1/datos_ALS.tsv", header = TRUE)
+datos_ALS<-read.table("../Dia_3/datos_ALS.tsv", header = TRUE)
 
 ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
   geom_point() +
