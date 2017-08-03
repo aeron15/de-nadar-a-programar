@@ -1,0 +1,64 @@
+---
+title: "Graficas de Lineas"
+output: html_document
+author: Itzel, Carolina, Emilio
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+library(dplyr)
+library(readr)
+library(ggplot2)
+```
+
+```{r}
+datos_df <- read_tsv("../datos/datos_arrecifes_especies.tsv")
+datos_df %>% filter(especie == 'Acanthaster_planci') %>% ggplot() + geom_point(aes(x=year, y=total, color=especie))
+```
+
+```{r}
+datos_df %>% filter(especie=="Holacanthus_passer") %>% ggplot()+ geom_point(aes(x=year,y=biomasa,color = especie, shape = especie))
+```
+
+```{r}
+ ggplot(datos_df) + geom_line(aes(x=latitud, y=especie, color=especie))
+```
+
+```{r}
+ ggplot(datos_df) + geom_line(aes(x=longitud, y=especie, color=especie))
+
+```
+
+```{r}
+##facet_grid(region~especie)    facet_wrap(region~especie)
+```
+
+```{r}
+a2016 <- filter(datos_df, year == 2016)
+```
+
+```{r}
+ggplot(a2016) + geom_point(aes(x = especie, y = total, color = localidad)) + theme(axis.text.x = element_text(angle=90, hjust =1))
+```
+
+```{r}
+ggplot(a2016) + geom_point(aes(x = longitud, y = latitud, color = localidad)) + theme(axis.text.x = element_text(angle=90, hjust =1)) + facet_wrap(~especie)
+```
+
+```{r}
+ggplot(datos_df) + geom_point(aes(x = longitud, y = latitud, color = especie)) + theme(axis.text.x = element_text(angle=90, hjust =1)) + facet_wrap(~especie)
+```
+```{r}
+ggplot(datos_df) + geom_line(aes(x = longitud, y = latitud, color = especie)) + theme(axis.text.x = element_text(angle=90, hjust =1)) + facet_wrap(~especie)
+```
+
+```{r}
+ggplot(a2016) + geom_line(aes(x= biomasa, y=temperatura, color = temperatura))
+```
+
+```{r}
+ggplot(a2016) + geom_line(aes(x= biomasa, y=temperatura, color = temperatura)) + facet_wrap(~especie)
+```
+
+

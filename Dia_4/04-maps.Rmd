@@ -1,0 +1,51 @@
+---
+title: "Hacer mapas"
+author: "Renan Escalante-Chong"
+date: "8/2/2017"
+output: html_document
+---
+
+```{r, include=FALSE}
+library(readxl)
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(stringr)
+library(readr)
+library(lubridate)
+library(ggmap)
+```
+
+Importar datos
+
+```{r, include=FALSE}
+datos_df<- read_tsv("../datos/datos_arrecifes_especies.tsv")
+```
+
+Add distribution of species
+
+```{r, echo=FALSE}
+
+bc_bbox <- make_bbox(lat = latitud, lon = longitud, data = datos_df)
+
+bc_big <- get_map(location = bc_bbox, source = "google", maptype = "terrain")
+
+# plot the points and color them by sector
+ggmap(bc_big) + 
+  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad))
+```
+
+```{r}
+datos_df$localidad <- as.factor(datos_df$localidad)
+# ggmap(bc_big) + 
+#   geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = biomasa, shape = localidad)) + scale_shape_manual(values = 1:nlevels(datos_df$localidad))
+
+ggmap(bc_big) + 
+  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = biomasa, shape = localidad)) + scale_shape_manual(values = rep(1:6, 7))
+
+```
+
+
+

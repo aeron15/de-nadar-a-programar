@@ -1,0 +1,54 @@
+---
+title: "Arrecifes"
+author: "Constanza Zuniga"
+date: "August 2, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(magrittr)
+library(stringr)
+library(tidyr)
+
+datos_df<-read_tsv("../datos/datos_arrecifes_especies.tsv")
+```
+
+#Histogramas
+```{r}
+ggplot(datos_df, aes(x=temperatura)) + geom_histogram(fill='white',color='black')+ggtitle("Histograma temperatura")
+```
+
+```{r}
+ggplot(datos_df, aes(x=biomasa)) + geom_histogram()+ggtitle("Histograma biomasa")
+```
+
+```{r}
+ggplot(datos_df, aes(x=month)) + geom_histogram(color='black',fill='cornsilk')+ggtitle("Histograma mes")
+```
+
+```{r}
+ggplot(datos_df, aes(x=densidad)) + geom_histogram(fill='dodgerblue', color='darkblue')+ggtitle("Histograma densidad")
+```
+
+```{r}
+ggplot(datos_df, aes(x=year)) + geom_histogram(fill='red',color='white')+ggtitle("Histograma a?o")
+```
+
+#Datos de todas las especies
+```{r}
+ggplot(datos_df, aes(x=temperatura)) + geom_histogram(color='white',fill='darkgoldenrod1')+facet_wrap(~especie)+ggtitle("Histograma de temperatura por especie")
+```
+
+```{r}
+ggplot(datos_df, aes(x=month, y=densidad))+geom_bar(stat="identity", fill='coral1')+facet_wrap(~especie)+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+theme_bw()+ggtitle("Densidad por mes de cada especie")
+```
+

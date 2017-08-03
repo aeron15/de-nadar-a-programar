@@ -1,0 +1,36 @@
+---
+title: "Grafica"
+author: "nat"
+date: "August 2, 2017"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+
+datos_df<-read_tsv("../datos/datos_arrecifes_especies.tsv")
+```
+
+```{r}
+datos_m_r<-filter(datos_df , especie =='Mycteroperca_rosacea')
+ 
+ 
+  ggplot(datos_m_r) + geom_point(aes(x=temperatura, y=total), stat = "identity") + facet_wrap(~localidad)
+```
+```{r}
+ggplot(datos_m_r,aes(x=localidad, y= total)) + geom_boxplot()+coord_flip()
+```
+
+#En la tabla 2 se puede observar que en la Isla San Lorenzo
+```{r}
+echo=FALSE
+
+include=FALSE
+
+```
+
+
+
+

@@ -24,14 +24,18 @@ datos_golfo <- '../datos/golfo_california.xlsx' %>% read_excel(sheet = 3, skip =
 
 temperatura_df <- '../datos/temperatura.xlsx' %>% read_excel(sheet = 1) %>% clean_names()
 
-sitios_pacifico <- '../datos/pacifico.xlsx' %>% read_excel(sheet = 1) %>% clean_names() %>% mutate(localidad = str_to_lower(localidad)) %>% mutate(localidad = iconv(localidad, to="ASCII//TRANSLIT")) %>% mutate(localidad = str_replace(localidad, "'",''))
+sitios_pacifico <- '../datos/pacifico.xlsx' %>% read_excel(sheet = 1) %>% clean_names() %>% mutate(localidad = str_to_lower(localidad)) %>% mutate(localidad = iconv(localidad, to="ASCII//TRANSLIT")) %>% mutate(localidad = str_replace(localidad, "'",'')) %>% mutate(localidad = str_replace(localidad, " ", "_"))
+
+sitios_pacifico$localidad[sitios_pacifico$localidad == "marias"] <- "islas_marias"
 
 ```
 
 ```{r, include=FALSE}
 tmp1 <- datos_golfo  %>% rename(localidad = sitio_oficial, total = abundancia) %>% dplyr::select(localidad, especie, total, biomasa, densidad, latitud, longitud, fecha) %>% mutate(region = 'golfo') %>% mutate(localidad = iconv(localidad, to="ASCII//TRANSLIT")) %>% mutate(localidad = str_replace(localidad, "'",''))
 
-tmp2 <- datos_pacifico %>% dplyr::select(localidad, especie, total, biomasa, densidad, fecha) %>% mutate(region = 'pacifico')
+datos_pacifico$localidad[datos_pacifico$localidad == "huatulco-pa"] <- "huatulco_pa"
+
+tmp2 <- datos_pacifico %>% dplyr::select(localidad, especie, total, biomasa, densidad, fecha) %>% mutate(region = 'pacifico') %>% mutate(localidad = str_replace(localidad, " ", "_"))
 
 tmp2 %<>% left_join(sitios_pacifico %>% select(localidad, latitud, longitud), by = "localidad")
 
@@ -47,24 +51,40 @@ temperatura_df %<>% gather(localidad, temperatura, -mes, -año) %>% mutate(local
 
 datos_df %<>% as_data_frame()
 temperatura_df %<>% as_data_frame()
-temperatura_df$year <- as.character(temperatura_df$year)
+```
+
+```{r, include=FALSE}
+temperatura_df %<>% mutate(month = month.abb[month])
+temperatura_df$localidad[temperatura_df$localidad == "marias"] <- "islas_marias"
+temperatura_df$localidad[temperatura_df$localidad == "huatulco_puerto_angel"] <- "huatulco_pa"
+
 temperatura_df$month <- as.character(temperatura_df$month)
+temperatura_df$year <- as.character(temperatura_df$year)
+
+datos_df$month <- as.numeric(datos_df$month)
+datos_df %<>% mutate(month = month.abb[month])
+
+datos_df %<>% filter(!is.na(month))
 
 datos_df %<>% left_join(temperatura_df, by = c("year", "month", "localidad"))
 
 datos_df %<>% filter(!is.na(localidad))
-# datos_df %<>% mutate(mes = month(as.POSIXlt(fecha, format="%d/%m/%Y")))
-# datos_df %<>% mutate(año = year(as.POSIXlt(fecha, format="%d/%m/%Y")))
-# datos_df %<>% mutate(mes = month(dmy(fecha)))
 
-# datos_df %>% mutate(region = ifelse(localidad = 'loreto', , ,))
-# datos_df %>% mutate(region = if_else(localidad == 'loreto'){'golfo'})
 datos_df$region[datos_df$localidad == 'loreto'] <- 'golfo'
 datos_df$region[datos_df$localidad == 'espiritu_santo'] <- 'golfo'
 datos_df$region[datos_df$localidad == 'cabo_pulmo'] <- 'golfo'
 datos_df$region[datos_df$localidad == 'los_cabos'] <- 'golfo'
 
+datos_df %<>% mutate(month = match(month, month.abb))
+
 datos_df %>% write_tsv('../datos/datos_arrecifes_especies.tsv')
+
+temperatura_df %<>%  mutate(month = match(month, month.abb))
+
+temperatura_df %>% write_tsv('../datos/temperatura_por_sitio.tsv')
+
+# datos_df <- read_tsv('../datos/datos_arrecifes_especies.tsv')
+
 ```
 
 Abundancia por especie
@@ -72,9 +92,9 @@ Abundancia por especie
 ```{r, echo=FALSE}
 # Abundancia por especie
 datos_df %>% ggplot(aes(x=localidad, y = densidad )) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + facet_wrap(~ especie)
+
+
 ```
-
-
 
 ```{r, echo=FALSE}
 datos_df %>% ggplot(aes(x = biomasa )) + geom_histogram() + facet_grid(especie ~ localidad)
@@ -88,5 +108,20 @@ datos_df %>% mutate(biomasa = log10(biomasa)) %>% ggplot(aes(x = localidad, y = 
 datos_df %>% filter(especie == 'Holacanthus_passer') %>% ggplot(aes(x=latitud, y = densidad)) + geom_point()
 
 datos_df %>% ggplot(aes(x=latitud, y = densidad)) + geom_point() + facet_wrap('especie')
+```
+
+```{r}
+grupo_trofico_df <- data.frame(especie = c("Holacanthus_passer","Lutjanus_argentiventris","Diadema_mexicanum","Pinctada_mazatlanica","Mycteroperca_rosacea","Stegastes_rectrifaenum","Acanthaster_planci","Scarus_ghobban", "Zanclus_cornutus","Isostichopus_fuscus"), grupo_trofico = c("omnivoro","carnivoro","herbivoro","filtrador","carnivoro","herbivoro","carnivoro","herbivoro","omnivoro","filtrador"))
+
+grupo_trofico_df %>% write_tsv('../datos/grupo_trofico_df.tsv')
+
+```
+
+```{r}
+tmp <- datos_df %>% left_join(grupo_trofico_df, by="especie")
+
+proteccion_df <- read_tsv("../datos/proteccion_df.tsv")
+
+tmp <-  datos_df %>% left_join(proteccion_df, by="localidad")
 ```
 

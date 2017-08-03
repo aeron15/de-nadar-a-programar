@@ -9,21 +9,26 @@ output: ioslides_presentation
 
 ## Load libraries
 
-```{r}
+```{r, include=FALSE}
+library(ggplot2)
+library(readr)
 library(plotly)
+library(dplyr)
 ```
 
 ## Lear datos
 
 ```{r}
-datos_ALS<-read.table(file="../Dia_1/datos_ALS.tsv", header = TRUE)
+datos_df <- read_tsv("../datos/datos_arrecifes_especies.tsv")
 ```
 
 ## Crear un plot interactivo
 
 ```{r}
-p<-ggplot(datos_ALS,aes(x=edad,y=progresion))+ geom_point()
-ggplotly(p)
+
+datos_df %>% filter(localidad == "isla_cerralvo") %>% ggplot(aes(x= year, y = temperatura)) + geom_point()
+
+# datos_df %>% filter(localidad == "isla_cerralvo") %>% ggplot(aes(x= temperatura, y = densidad)) + geom_point()
 ```
 
 ## Cambiar Agregar texto a cada plot

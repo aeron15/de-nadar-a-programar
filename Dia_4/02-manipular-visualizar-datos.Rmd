@@ -5,170 +5,58 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: ioslides_presentation
 ---
 
-# Conceptos importantes
+```{r, include=FALSE}
+library(dplyr)
+library(janitor)
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(stringr)
+library(readr)
+library(lubridate)
+library(ggmap)
+```
 
-## Diferencias entre variables continúas y discretas
-
-- Una variable continúa es númericas (son numeric)
-
-- Una variable discreta describe categorías (son characters, factors)
+Determina cual es la localidad con mas years sampled
+Cual es el numero de especies por localidad
 
 ```{r}
-class(1)
-class("paciente")
+datos_df <- read_tsv("../datos/datos_arrecifes_especies.tsv")
 ```
 
+# Grouping and summarizing
 
-# Manipulación (manejo) y visualización de datos
+Determinar el ecosistema más diverso
 
-```{r setup, include=FALSE}
-library(ggplot2)
-```
+```{r}
 
-## Selección condicional (color)
+localidad_diversidad_df <- datos_df %>% group_by(localidad) %>% select(localidad, especie) %>% summarise(n_distinct(especie))
 
-```{r, fig.height = 3 , fig.width= 7}
-ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy, color = displ<5))
-```
-
-## Gráfico con ciertos puntos resaltados
-
-```{r, fig.height = 4 , fig.width= 7}
-ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
-  geom_point() + 
-  geom_point(data = dplyr::filter(mpg, displ > 5, hwy > 20), 
-             colour = "red", size = 2.2)
-```
-
-## Agregar un título
-
-```{r , fig.height = 3 , fig.width= 5}
-datos_ALS<-read.table("../Dia_3/datos_ALS.tsv", header = TRUE)
-
-ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
-  geom_point() +
-  ggtitle("Relación de la progresion como función de edad")
-```
-
-## Cambiar el texto del título
-
-```{r , fig.height = 3 , fig.width= 5}
-
-ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
-geom_point() +
-ggtitle("Relación de la progresion como función de edad") +
-theme(axis.title.x=element_text(size=16, lineheight=.9, family="Times",
-                                        face="bold.italic", colour="red"))
-```
-
-## Anotar puntos de los gráficos (slide 1)
-
-Agregar texto de pacientes
-
-```{r, eval=FALSE}
-ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
-  geom_point() +
-  geom_text(aes(label=pacientes), size=4,vjust=2)
-```
-
-## Anotar puntos de los gráficos (slide 2)
-
-Agregar texto de pacientes
-
-```{r, fig.height = 4 , fig.width= 7, echo=FALSE}
-ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
-  geom_point() +
-  geom_text(aes(label=pacientes), size=4,vjust=2)
-```
-
-## Agregar texto a un gráfico
-
-Agregar más texto a un gráfico
-
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(data=datos_ALS, mapping = aes(x=edad, y=progresion))+ 
-  geom_point() +
-  annotate("text", x=60, y=0.5, label="Anotacion", family="serif",
-                 fontface="italic", colour="darkred", size=3) 
+year_df <- datos_df %>% group_by(localidad, year) %>% select(localidad, especie) %>% summarise(count_especies = n_distinct(especie))
 
 ```
 
-## Intercambiar los ejes a los gráficos (slides 1)
+Calcular diversidad promedio por especie por sitio
 
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity") 
+```{r}
+densidad_promedio_df <- datos_df %>% group_by(especie, localidad) %>% summarise(densidad_promedio = mean(densidad))
 ```
 
 
-## Intercambiar los ejes a los gráficos (slides 2)
-
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity") +
-  coord_flip()
+```{r}
+densidad_promedio_df %>% ggplot(aes(x=especie, y = densidad_promedio)) + geom_bar(stat = 'identity') +  facet_wrap(~localidad) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+## Recode
 
-## Agregar nombres a los ejes
+Los nombres están muy largos
 
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity") +
-  coord_flip()+
-  scale_x_discrete(labels = datos_ALS$tipo_ALS)
+```{r}
+# str_c(unique(densidad_promedio_df$especie), collapse = "'='")
+
+densidad_promedio_df %<>% ungroup() %>% mutate(especie = recode(especie, 'Acanthaster_planci'= 'A_P', 'Diadema_mexicanum'= 'D_M', 'Holacanthus_passer'= 'H_P', 'Isostichopus_fuscus'= 'I_P', 'Lutjanus_argentiventris'= 'L_A', 'Mycteroperca_rosacea'= 'M_R', 'Pinctada_mazatlanica'= 'P_M', 'Scarus_ghobban'= 'S_G', 'Stegastes_rectrifaenum'= 'S_R', 'Zanclus_cornutus'= "Z_C"))
 ```
 
-## Agregar temas a las figuras
-
-Prueba los siguientes temas theme_bw, theme_grey,theme_classic, theme_minimal
-
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity")+
-  coord_flip()+
-  theme_bw()
-```
-
-## Rotar ejes
-
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90))
-```
-
-## Rotar ejes y anotar
-
-Ajustar los ejes de  los datos
-
-```{r, fig.height = 3 , fig.width= 5}
-ggplot(datos_ALS, aes(x=pacientes,y=progresion))+ 
-  geom_bar(stat = "identity")+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-```
-
-## Facets
-
-```{r, fig.height = 4 , fig.width= 7}
-ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
-  geom_point() + 
-  facet_grid(. ~ genero)
-```
-
-## Facets 2
-
-```{r, fig.height = 4 , fig.width= 7}
-ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
-  geom_point() + 
-  facet_grid(. ~ tipo_ALS)
-```
-
-## Facets 3
-
-```{r, fig.height = 4 , fig.width= 7}
-ggplot(data = datos_ALS, mapping = aes(x = edad, y = progresion)) + 
-  geom_point() + 
-  facet_grid(genero ~ tipo_ALS)
+```{r}
+densidad_promedio_df %>% ggplot(aes(x=especie, y = densidad_promedio)) + geom_bar(stat = 'identity') +  facet_wrap(~localidad) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
