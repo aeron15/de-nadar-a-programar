@@ -4,6 +4,13 @@ author: "Renan Escalante-Chong"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: ioslides_presentation
 ---
+
+```{r, include=FALSE}
+library(readr)
+library(dplyr)
+library(gsheet)
+```
+
 # 03-Importar datos a R
 
 ## Cambiar el directorio
@@ -15,9 +22,8 @@ Cambiar directorio **setwd()**
 ## Importar sencillo
 
 ```{r, eval=FALSE}
-datos<-read.table(file="datos_ALS.tsv", header = TRUE)
-datos<-read.table(file="datos_ALS.csv", header = TRUE, sep = ",")
-
+datos <- read_tsv(file = "datos_ALS.tsv")
+datos <- read.table(file = "datos_ALS.csv")
 ```
 
 
@@ -25,9 +31,8 @@ datos<-read.table(file="datos_ALS.csv", header = TRUE, sep = ",")
 
 ```{r eval=FALSE}
 
-url <- 'https://docs.google.com/spreadsheets/d/1Tyi4fJwSRjMUOznJ5piHJEcvw7QNVZ7cPXvCAfXGf9M/edit?usp=sharing'
+url <- 'https://docs.google.com/spreadsheets/d/1LTj9g8FC2LI9L4R0rfJEouU40QUq9hU523o8-EbQ_K8/edit?usp=sharing'
 datos <- gsheet2tbl(url)
-datos<-as.data.frame(datos)
 ```
 
 
@@ -36,7 +41,7 @@ datos<-as.data.frame(datos)
 ```{r}
 library(readxl)
 
-file<-"../../ALS_research/data/proteomics/iMNs/20160707_iMN_ProteinLevel_Comparison_ComboLibrary_ToRenan.xlsx"
+file<-"../datos/golfo_california.xlsx"
 data<-readxl::read_excel(file, sheet=1)
 ```
 

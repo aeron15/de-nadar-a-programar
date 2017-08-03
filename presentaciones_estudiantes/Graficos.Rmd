@@ -1,0 +1,32 @@
+---
+title: "Estado de las poblaciones de Isostichopus fuscus y Lutjanus argentiventris, especies de interes comercial"
+output: html_document
+---
+# Pregunta
+?Que informacion nos dan los datos sobre el estado de conservacion y/o explotacion comercial de estas especies? 
+
+```{r, include=FALSE}
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(tidyr)
+```
+```{r, include=FALSE}
+datos_df<-read_tsv("../datos/datos_arrecifes_especies.tsv")
+pargo<-filter(datos_df, especie=='Lutjanus_argentiventris')
+```
+```{r, echo=FALSE}
+ggplot(datos_df, aes(x=densidad, y=total, color=especie, size=densidad)) + geom_point() + facet_grid(region~especie) + ggtitle('Densidad total de especies por region')
+```
+
+```{r, echo=FALSE}
+ ggplot(pargo, aes(x=total, y=localidad, colour=biomasa, size= biomasa))+geom_point()+facet_wrap(~region)+ggtitle('Biomasa de Lutjanus por localidad y region')
+```
+
+```{r, echo=FALSE}
+datos_i_f <- filter(datos_df, especie== 'Isostichopus_fuscus')
+ggplot(datos_i_f, aes(x=total, y=localidad, color=biomasa, size=biomasa)) + geom_point() + facet_grid(~region)+ ggtitle('Biomasa de Isostichopus fuscus por localidad y region')
+```
+
+
+

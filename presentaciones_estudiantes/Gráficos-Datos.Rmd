@@ -1,0 +1,38 @@
+---
+title: "Gr?ficos"
+author: "Carlos, Sarai, Evelin"
+date: "2 de agosto de 2017"
+output: html_document
+---
+##Gr?ficos
+
+```{r,include=FALSE}
+library(tidyr)
+library(readr)
+library(dplyr)
+library(ggplot2)
+read_tsv("../datos/datos_arrecifes_especies.tsv")
+datos_df <- read_tsv("../datos/datos_arrecifes_especies.tsv")
+
+```
+```{r, echo=FALSE}
+ggplot(datos_df, aes(x=especie, y=total)) + geom_bar(stat="identity",  fill="lightblue") + theme(axis.text.x = element_text(angle =45,hjust= 1))
+```
+
+```{r, echo=FALSE}
+
+datos_s_r <- filter(datos_df,especie=='Stegastes_rectrifaenum')
+
+ggplot(datos_s_r,aes(x=localidad, y=total, shape='Stegastes_rectrifaenum'))+geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90,hjust = 1))
+
+```
+
+```{r, echo=FALSE}
+ggplot(datos_df, aes(x=especie, y=total)) +
+    geom_bar(stat="identity",  fill="lightblue") + theme(axis.text.x = element_text(angle =45,hjust= 1)) + facet_wrap( ~ region)
+```
+
+```{r, echo=FALSE}
+datos_df %>% ggplot(aes(x = especie, y = total)) + geom_bar(stat = "identity") + theme(axis.title.x = element_text(angle = 67.5, hjust = 1)) + facet_wrap(~localidad) + theme(axis.title.x = element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank())
+```
+

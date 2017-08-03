@@ -1,0 +1,32 @@
+---
+title: "Graficas de Lineas"
+output: html_document
+author: Itzel, Carolina, Emilio
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+library(readr)
+library(ggplot2)
+```
+
+```{r}
+datos_df <- read_tsv("../datos/datos_arrecifes_especies.tsv")
+datos_df %>% filter(especie == 'Acanthaster_planci') %>% ggplot() + geom_point(aes(x=year, y=total, color=especie))
+```
+
+```{r}
+ ggplot(datos_df) + geom_line(aes(x=latitud, y=especie, color=especie))
+```
+
+```{r}
+ ggplot(datos_df) + geom_line(aes(x=longitud, y=especie, color=especie))
+
+```
+
+```{r}
+##facet_grid(region~especie)    facet_wrap(region~especie)
+
+```
+
