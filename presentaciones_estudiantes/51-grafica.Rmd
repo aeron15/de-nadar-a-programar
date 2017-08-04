@@ -19,6 +19,7 @@ datos_m_r<-filter(datos_df , especie =='Mycteroperca_rosacea')
  
   ggplot(datos_m_r) + geom_point(aes(x=temperatura, y=total), stat = "identity") + facet_wrap(~localidad)
 ```
+
 ```{r}
 ggplot(datos_m_r,aes(x=localidad, y= total)) + geom_boxplot()+coord_flip()
 ```

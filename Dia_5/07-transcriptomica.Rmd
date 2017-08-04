@@ -1,8 +1,0 @@
----
-title: "07-transcriptomica"
-author: "Renan Escalante-Chong"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
-output: html_document
----
-
-

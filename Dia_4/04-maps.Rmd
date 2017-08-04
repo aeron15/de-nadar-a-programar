@@ -22,6 +22,9 @@ Importar datos
 
 ```{r, include=FALSE}
 datos_df<- read_tsv("../datos/datos_arrecifes_especies.tsv")
+
+# datos_df %<>% filter(localidad == 'isla_cerralvo'| localidad == "acapulco")
+# datos_df %<>% filter(localidad == 'acapulco')
 ```
 
 Add distribution of species
@@ -31,14 +34,15 @@ Add distribution of species
 bc_bbox <- make_bbox(lat = latitud, lon = longitud, data = datos_df)
 
 bc_big <- get_map(location = bc_bbox, source = "google", maptype = "terrain")
-
-# plot the points and color them by sector
-ggmap(bc_big) + 
-  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad))
 ```
 
 ```{r}
-datos_df$localidad <- as.factor(datos_df$localidad)
+ggmap(bc_big) + 
+  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = total))
+    ```
+
+```{r}
+# datos_df$localidad <- as.factor(datos_df$localidad)
 # ggmap(bc_big) + 
 #   geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = biomasa, shape = localidad)) + scale_shape_manual(values = 1:nlevels(datos_df$localidad))
 
@@ -48,4 +52,82 @@ ggmap(bc_big) +
 ```
 
 
+```{r}
+costa <- get_map(location = bc_bbox, source = "google", maptype = "watercolor")
+
+```
+
+```{r}
+ggmap(costa) + 
+  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad))
+```
+
+
+# Graficas mapas
+
+```{r}
+temperatura_df <- read_tsv("../datos/temperatura_por_sitio.tsv")
+```
+```{r}
+temperatura_df %>% filter(year == '2002') %>% ggplot(aes(x= localidad, y = temperatura)) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+```{r}
+
+temperatura_df_plot <- temperatura_df %>% group_by(year, localidad) %>% summarise(promedio_temperatura = mean(temperatura))
+
+temperatura_df_plot %>% filter(year == '2002') %>% ggplot(aes(x= localidad, y = promedio_temperatura, fill = promedio_temperatura)) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+```
+
+
+Agregar el año en el medio
+
+```{r}
+temperatura_df_plot %>% filter(year == '2002') %>% ggplot(aes(x= localidad, y = promedio_temperatura, fill = promedio_temperatura)) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + coord_polar(theta = "x", direction=1) + scale_fill_gradient(low="blue", high="red")
+```
+
+
+```{r}
+library(gganimate)
+
+```
+```{r}
+p <- temperatura_df_plot %>% ggplot(aes(x= localidad, y = promedio_temperatura, fill = promedio_temperatura, frame = year)) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + coord_polar(theta = "x", direction=1) + scale_fill_gradient(low="blue", high="red")
+```
+
+```{r}
+library(gapminder)
+library(gganimate)
+library(ggplot2)
+
+
+theme_set(theme_bw())
+p <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, color = continent, frame = year)) +
+  geom_point() +
+  scale_x_log10()
+
+# Notice we added frame = year and saved the plot as p. 
+# We then display it as an animation with the gg_animate function:
+gganimate(p, 'test.gif')
+```
+
+```{r}
+p <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, color = continent, frame = year)) +
+  geom_point() +
+  scale_x_log10()
+
+```
+
+
+```{r}
+datos_df<- read_tsv("../datos/datos_arrecifes_especies.tsv")
+```
+
+
+Sacar numero de especies por localidad
+
+```{r}
+tmp <- datos_df %>% group_by(localidad) %>% summarise(numero_especies = n_distinct(especie))
+```
 
