@@ -15,6 +15,7 @@ library(tidyr)
 datos_df<-read_tsv("../datos/datos_arrecifes_especies.tsv")
 pargo<-filter(datos_df, especie=='Lutjanus_argentiventris')
 ```
+
 ```{r, echo=FALSE}
 ggplot(datos_df, aes(x=densidad, y=total, color=especie, size=densidad)) + geom_point() + facet_grid(region~especie) + ggtitle('Densidad total de especies por region')
 ```

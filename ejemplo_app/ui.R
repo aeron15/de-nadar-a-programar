@@ -1,45 +1,33 @@
-# ui.R
-library(plotly)
-library(shinyjs)
-library(V8)
-library(dplyr)
-library(stringr)
-library(DT)
-library(GeneOverlap)
-library(data.table)
-library(plotly)
-library(tidyr)
+#
+# This is the user-interface definition of a Shiny web application. You can
+# run the application by clicking 'Run App' above.
+#
+# Find out more about building applications with Shiny here:
+# 
+#    http://shiny.rstudio.com/
+#
 
-#shinyUI(fluidPage(
-shinyUI(fluidPage(theme = "bootstrap.css",
-  titlePanel("Test of different plots for data"),
+library(shiny)
+
+# Define UI for application that draws a histogram
+shinyUI(fluidPage(
   
+  # Application title
+  titlePanel("Old Faithful Geyser Data"),
+  
+  # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      helpText("Este es un app de distintos tipos de datos"),
-
-  
-      #h4('Select the tissue to compare your data'),
-      selectInput("dataset", 
-                  label = "Escoger set de datos",
-                  choices = c("barras","dispersion")),
-      
-      #Added nice colors to submission buttons
-      bootstrapPage(
-        actionButton("button1", "Submit gene list", class="btn-primary")
-      )
-      
-      ),
+       sliderInput("bins",
+                   "Number of bins:",
+                   min = 1,
+                   max = 50,
+                   value = 30)
+    ),
     
+    # Show a plot of the generated distribution
     mainPanel(
-      h2("Resultados del análisis"),
-      
-      #h3("Top enriched transcription factors (by p-values)"),
-      #h3(textOutput("text1")),
-      #textOutput("text1"),
-      #plotlyOutput("trendPlot"),
-      plotOutput("distPlot")
-      
+       plotOutput("distPlot")
     )
   )
 ))

@@ -1,48 +1,26 @@
-# server.R
+#
+# This is the server logic of a Shiny web application. You can run the 
+# application by clicking 'Run App' above.
+#
+# Find out more about building applications with Shiny here:
+# 
+#    http://shiny.rstudio.com/
+#
 
-#library(dplyr)
-#library(stringr)
-#library(DT)
-#library(GeneOverlap)
-#library(data.table)
-#library(plotly)
-#library(tidyr)
+library(shiny)
 
-shinyServer(
-
-  #Source code and functions for the app
+# Define server logic required to draw a histogram
+shinyServer(function(input, output) {
+   
+  output$distPlot <- renderPlot({
     
-  function(input, output) {
-    datasetInput <- eventReactive(input$button1,{
-      switch(input$dataset,
-             "barras" = "barras",
-             "dispersion" = "dispersion"
-             #"iPSCs" = "data/pos_list_genes_iPSCs_iMNsTF_anno.txt"
-             )
-    })
+    # generate bins based on input$bins from ui.R
+    x    <- faithful[, 2] 
+    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    
+    # draw the histogram with the specified number of bins
+    hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    
+  })
   
-    output$distPlot <- renderPlot({
-      
-      filename <-datasetInput()
-      if(filename=="barras"){
-        # generate an rnorm distribution and plot it
-        dist <- rnorm(30)
-        hist(dist)  
-      }else{
-        dist2 <- rnorm(30)
-        dist1 <- rnorm(30)
-        plot(dist1,dist2)
-      }
-      
-    })  
-    
-    #output$trendPlot <- renderPlotly({
-    #  #Plot results in an interactive bar chart
-    #  results<-results1()
-    #  test.TF<-results$enrichment
-    #  plot_bar_chart(test.TF) 
-    #      
-    #})
-    
-  }
-)
+})

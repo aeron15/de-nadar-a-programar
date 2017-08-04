@@ -125,3 +125,22 @@ proteccion_df <- read_tsv("../datos/proteccion_df.tsv")
 tmp <-  datos_df %>% left_join(proteccion_df, by="localidad")
 ```
 
+```{r}
+calificaciones_df <- data.frame(estudiante = c('Juan', 'Juan','Juan','Francisca','Francisca','Francisca'), calificaciones = c(10, 8, 9, 10, 10, 10))
+
+calificaciones_df %>% group_by(estudiante) %>% summarise(promedio = mean(calificaciones))
+```
+
+```{r}
+proteccion_df <- read_tsv("../datos/proteccion_df.tsv")
+
+datos_df %<>% left_join(proteccion_df, by = "localidad")
+
+  # datos_df <- datos_df %>% left_join(proteccion_df, by = "localidad")
+```
+```{r}
+url2 <- 'https://docs.google.com/spreadsheets/d/1MpzfxTEBhzz7U3lEgAiEDBGBhj0R4KjOGRoED3hRpC4/edit?usp=sharing'
+
+```
+
+

@@ -32,7 +32,12 @@ datos <- read.table(file = "datos_ALS.csv")
 ```{r eval=FALSE}
 
 url <- 'https://docs.google.com/spreadsheets/d/1LTj9g8FC2LI9L4R0rfJEouU40QUq9hU523o8-EbQ_K8/edit?usp=sharing'
-datos <- gsheet2tbl(url)
+datos_censo_agua <- gsheet2tbl(url)
+
+url2 <- 'https://docs.google.com/spreadsheets/d/1MpzfxTEBhzz7U3lEgAiEDBGBhj0R4KjOGRoED3hRpC4/edit?usp=sharing'
+
+siluetas <- gsheet2tbl(url2)
+
 ```
 
 
