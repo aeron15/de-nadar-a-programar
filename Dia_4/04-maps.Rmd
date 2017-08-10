@@ -37,8 +37,10 @@ bc_big <- get_map(location = bc_bbox, source = "google", maptype = "terrain")
 ```
 
 ```{r}
-ggmap(bc_big) + 
-  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = total))
+sp <- ggmap(bc_big) + 
+  geom_point(data = datos_df, mapping = aes(x = longitud, y = latitud, color = localidad, size = total)) 
+
+sp + geom_text(aes(label= localidad))
     ```
 
 ```{r}
